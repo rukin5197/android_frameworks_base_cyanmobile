@@ -24,6 +24,11 @@ import android.os.Handler;
 import android.os.AsyncResult;
 import android.util.Config;
 import android.util.Log;
+/*
+ * KD - Make system props available
+ */
+import android.os.SystemProperties;
+
 
 /**
  * {@hide}
@@ -49,6 +54,7 @@ public abstract class BaseCommands implements CommandsInterface {
     protected RegistrantList mCallStateRegistrants = new RegistrantList();
     protected RegistrantList mNetworkStateRegistrants = new RegistrantList();
     protected RegistrantList mDataConnectionRegistrants = new RegistrantList();
+
     protected RegistrantList mRadioTechnologyChangedRegistrants = new RegistrantList();
     protected RegistrantList mIccStatusChangedRegistrants = new RegistrantList();
     protected RegistrantList mVoicePrivacyOnRegistrants = new RegistrantList();
@@ -65,6 +71,13 @@ public abstract class BaseCommands implements CommandsInterface {
     protected RegistrantList mT53AudCntrlInfoRegistrants = new RegistrantList();
     protected RegistrantList mRingbackToneRegistrants = new RegistrantList();
     protected RegistrantList mResendIncallMuteRegistrants = new RegistrantList();
+/*
+ * KD 8/28 - Add new outcalls for RIL and CDMA devices, specifically the Triumph */
+    protected RegistrantList mCdmaSubscriptionSourceChangedRegistrants = new RegistrantList();
+    protected RegistrantList mCdmaPrlChangedRegistrants = new RegistrantList();
+/*
+ * End KD
+ */
 
     protected Registrant mSMSRegistrant;
     protected Registrant mNITZTimeRegistrant;
@@ -102,6 +115,29 @@ public abstract class BaseCommands implements CommandsInterface {
         return mState;
     }
 
+/* 
+ * KD 8/28 - Add Commands for CDMA Motorola upcalls 
+ */
+    public void registerForCdmaSubscriptionSourceChanged(Handler h, int what, Object obj) {
+        Registrant r = new Registrant (h, what, obj);
+        mCdmaSubscriptionSourceChangedRegistrants.add(r);
+    }
+
+    public void unregisterForCdmaSubscriptionSourceChanged(Handler h) {
+        mCdmaSubscriptionSourceChangedRegistrants.remove(h);
+    }
+
+    public void registerForCdmaPrlChanged(Handler h, int what, Object obj) {
+        Registrant r = new Registrant (h, what, obj);
+        mCdmaPrlChangedRegistrants.add(r);
+    }
+
+    public void unregisterForCdmaPrlChanged(Handler h) {
+        mCdmaPrlChangedRegistrants.remove(h);
+    }
+/*
+ * End
+ */
 
     public void registerForRadioStateChanged(Handler h, int what, Object obj) {
         Registrant r = new Registrant (h, what, obj);
@@ -678,9 +714,15 @@ public abstract class BaseCommands implements CommandsInterface {
                 mRadioTechnologyChangedRegistrants.notifyRegistrants();
             }
 
+            String sRILClassname = SystemProperties.get("ro.telephony.ril_class");
+
             if (mState.isGsm() && !oldState.isOn() && (mPhoneType == Phone.PHONE_TYPE_CDMA)) {
-                Log.d(LOG_TAG,"Notifying: radio technology change CDMA OFF to GSM");
-                mRadioTechnologyChangedRegistrants.notifyRegistrants();
+            	if ("Triumph".equals(sRILClassname)) {
+                  Log.d(LOG_TAG, "Triumph phone teardown ignored - no second radio");
+	        } else {
+       	         Log.d(LOG_TAG,"Notifying: radio technology change CDMA OFF to GSM");
+       	         mRadioTechnologyChangedRegistrants.notifyRegistrants();
+		}
             }
 
             if (mState.isCdma() && oldState.isGsm()) {

@@ -274,4 +274,16 @@ cat include/telephony/ril.h | \
     int RIL_UNSOL_OEM_HOOK_RAW = 1028;
     int RIL_UNSOL_RINGBACK_TONE = 1029;
     int RIL_UNSOL_RESEND_INCALL_MUTE = 1030;
+/*
+ * KD 8/27/2011 - Add additional CDMA constants.  Since I don't know WHICH
+ * PRL state change upcall is correct (the traceback from the motorola source
+ * and disassembly and Aurora codebase DIFFER!) I'm including both, given
+ * that you NEED to take notice of this along with the subscription source
+ * or you'll never get the PRL, MDN and MIN and thus data won't come up.
+ */
+    int RIL_UNSOL_CDMA_SUBSCRIPTION_SOURCE_CHANGED = 1031;
+    int RIL_UNSOL_CDMA_PRL_CHANGED = 1032;
+    int RIL_UNSOL_EXIT_EMERGENCY_CALLBACK_MODE = 1033;
+    int RIL_UNSOL_VOICE_RADIO_TECH_CHANGED = 1034;
+    int RIL_UNSOL_CDMA_PRL_CHANGED2 = 1035;
 }

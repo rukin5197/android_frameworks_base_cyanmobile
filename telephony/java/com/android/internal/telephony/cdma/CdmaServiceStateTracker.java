@@ -128,7 +128,7 @@ final class CdmaServiceStateTracker extends ServiceStateTracker {
     /** Contains the name of the registered network in CDMA (either ONS or ERI text). */
     private String curPlmn = null;
 
-    private String mMdn;
+    private String mMdn = null;
     private int mHomeSystemId[] = null;
     private int mHomeNetworkId[] = null;
     private String mMin;
@@ -296,6 +296,7 @@ final class CdmaServiceStateTracker extends ServiceStateTracker {
 
         switch (msg.what) {
         case EVENT_RADIO_AVAILABLE:
+		log("Receive EVENT_RADIO_AVAILABLE");
             break;
 
         case EVENT_RUIM_READY:
@@ -335,7 +336,16 @@ final class CdmaServiceStateTracker extends ServiceStateTracker {
             pollState();
             break;
 
+/*
+ * KD 8/28 - Handle CDMA Subscription Source Notification
+ */
+        case EVENT_CDMA_SUBSCRIPTION_SOURCE_CHANGED:
+            Log.w(LOG_TAG, "CDMA Subscription Source Upcall request");
+            cm.getCDMASubscription( obtainMessage(EVENT_POLL_STATE_CDMA_SUBSCRIPTION));	
+            break;
+
         case EVENT_NETWORK_STATE_CHANGED_CDMA:
+            Log.w(LOG_TAG, "CDMA NETwork State Change Upcall request");
             pollState();
             break;
 
@@ -414,6 +424,7 @@ final class CdmaServiceStateTracker extends ServiceStateTracker {
 
         case EVENT_POLL_STATE_REGISTRATION_CDMA:
         case EVENT_POLL_STATE_OPERATOR_CDMA:
+            Log.w(LOG_TAG, "CDMA Registration or Operator Upcall request");
             ar = (AsyncResult) msg.obj;
             handlePollStateResult(msg.what, ar);
             break;
@@ -423,9 +434,26 @@ final class CdmaServiceStateTracker extends ServiceStateTracker {
 
             if (ar.exception == null) {
                 String cdmaSubscription[] = (String[])ar.result;
-
+/*
+ * KD 8/28 - Add check for Triumph here, and if we find it, set up to run as
+ * the Samsung devices do on this request, since it appears they return
+ * 4 elements instead of five.  We then grab the PRL out of system properties.
+ * Yeah, it's bullshit, but there's debate over what RIL code 106 is, and
+ * I'm uncomfortable coding for it given the divergent definitions.  Isn't
+ * it fun when allegedly-standard APIs are different between implementations?
+ */
                 // Samsung CDMA devices have shorter cdmaSubscription parcel
-                int SUB_LENGTH = (mIsSamsungCdma) ? 4 : 5;
+                String sRILClassname = SystemProperties.get("ro.telephony.ril_class");
+		int SUB_LENGTH = 5;
+            	if ("Triumph".equals(sRILClassname)) {
+			SUB_LENGTH = 4;
+		} else {
+	                SUB_LENGTH = (mIsSamsungCdma) ? 4 : 5;	
+		}
+		Log.e(LOG_TAG, "cdmaSubscription0: " + cdmaSubscription[0]);
+		Log.e(LOG_TAG, "cdmaSubscription1: " + cdmaSubscription[1]);
+		Log.e(LOG_TAG, "cdmaSubscription2: " + cdmaSubscription[2]);
+		Log.e(LOG_TAG, "cdmaSubscription3: " + cdmaSubscription[3]);
                 if (cdmaSubscription != null && cdmaSubscription.length >= SUB_LENGTH) {
                     mMdn = cdmaSubscription[0];
                     if (cdmaSubscription[1] != null) {
@@ -440,7 +468,6 @@ final class CdmaServiceStateTracker extends ServiceStateTracker {
                         }
                     }
                     Log.d(LOG_TAG,"GET_CDMA_SUBSCRIPTION SID=" + cdmaSubscription[1] );
-
                     if (cdmaSubscription[2] != null) {
                         String[] nid = cdmaSubscription[2].split(",");
                         mHomeNetworkId = new int[nid.length];
@@ -454,14 +481,23 @@ final class CdmaServiceStateTracker extends ServiceStateTracker {
                     }
                     Log.d(LOG_TAG,"GET_CDMA_SUBSCRIPTION NID=" + cdmaSubscription[2] );
                     mMin = cdmaSubscription[3];
+                    Log.d(LOG_TAG,"GET_CDMA_SUBSCRIPTION MIN=" + cdmaSubscription[3] );
                     // Samsung CDMA devices' prl is not found in this parcel
                     // instead, extract it from system properties
-                    if (mIsSamsungCdma) {
-                        String[] prl = (SystemProperties.get("ril.prl_ver_1").split(":"));
-                        mPrlVersion = prl[1];
-                    } else {
-                        mPrlVersion = cdmaSubscription[4];
-                    }
+/*
+ * KD - again, check the triumph code and act as if Samsung
+ */
+            	    if ("Triumph".equals(sRILClassname)) {
+			mPrlVersion = SystemProperties.get("ro.telephony.ril_prl");
+	            } else {
+			if (mIsSamsungCdma) {
+				String[] prl = (SystemProperties.get("ril.prl_ver_1").split(":"));
+				mPrlVersion = prl[1];
+       	             	} else {
+	       	                mPrlVersion = cdmaSubscription[4];
+                    	}
+		    }
+                    Log.d(LOG_TAG,"GET_CDMA_SUBSCRIPTION PRL=" + mPrlVersion);
                     Log.d(LOG_TAG,"GET_CDMA_SUBSCRIPTION MDN=" + mMdn);
                     //Notify apps subscription info is ready
                     if (cdmaForSubscriptionInfoReadyRegistrants != null) {
@@ -971,7 +1007,18 @@ final class CdmaServiceStateTracker extends ServiceStateTracker {
             break;
 
         case SIM_NOT_READY:
+	     log("Received SIM_NOT_READY");
+
         case SIM_LOCKED_OR_ABSENT:
+/*
+ * KD 8/28 - do not kill the rado if we get a SIM ABSENT on a Triumph - just
+ * ignore the state.  Triumphs don't have SIMs.
+ */
+            log("SIM_LOCKED_OR_ABSENT RECEIVED");
+            String sRILClassname = SystemProperties.get("ro.telephony.ril_class");
+            if ("Triumph".equals(sRILClassname)) {
+	   	 break;
+	    }
         case SIM_READY:
             log("Radio Technology Change ongoing, setting SS to off");
             newSS.setStateOff();
@@ -1773,4 +1820,5 @@ final class CdmaServiceStateTracker extends ServiceStateTracker {
         phone.mCT.foregroundCall.hangupIfAlive();
         cm.setRadioPower(false, null);
     }
+
 }

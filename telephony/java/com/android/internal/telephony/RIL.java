@@ -24,7 +24,6 @@ import static android.telephony.TelephonyManager.NETWORK_TYPE_UMTS;
 import static android.telephony.TelephonyManager.NETWORK_TYPE_HSDPA;
 import static android.telephony.TelephonyManager.NETWORK_TYPE_HSUPA;
 import static android.telephony.TelephonyManager.NETWORK_TYPE_HSPA;
-import static android.telephony.TelephonyManager.NETWORK_TYPE_HSPAP;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -2012,7 +2011,21 @@ public class RIL extends BaseCommands implements CommandsInterface {
         switch(stateInt) {
             case 0: state = RadioState.RADIO_OFF; break;
             case 1: state = RadioState.RADIO_UNAVAILABLE; break;
-            case 2: state = RadioState.SIM_NOT_READY; break;
+/* 
+ * KD 8-29 If we have a Motorola Triumph it loves to send up a SIM_NOT_READY
+ * code up despite not having a sim.  It also NEVER sends up a NV_READY 
+ * state and it's supposed to, since there's no RUIM either.  Aren't
+ * standard APIs that manufacturer's violate wonderful?  As a consequence, we 
+ * treat the former as the latter - but only if it's a Triumph.
+ */
+            case 2: 
+	    	String sRILClassname = SystemProperties.get("ro.telephony.ril_class");
+            	if ("Triumph".equals(sRILClassname)) {
+            		state = RadioState.NV_READY;
+		} else {
+			state = RadioState.SIM_NOT_READY;
+		}
+		break;
             case 3: state = RadioState.SIM_LOCKED_OR_ABSENT; break;
             case 4: state = RadioState.SIM_READY; break;
             case 5: state = RadioState.RUIM_NOT_READY; break;
@@ -2433,6 +2446,16 @@ public class RIL extends BaseCommands implements CommandsInterface {
             case RIL_UNSOL_OEM_HOOK_RAW: ret = responseRaw(p); break;
             case RIL_UNSOL_RINGBACK_TONE: ret = responseInts(p); break;
             case RIL_UNSOL_RESEND_INCALL_MUTE: ret = responseVoid(p); break;
+/*
+ * KD 8/28 - Add additional unsolicited upcalls for CDMA (Moto Triumph)
+ * Source: Motorola disassembly and Aurora git codebase
+ */
+	    case RIL_UNSOL_CDMA_SUBSCRIPTION_SOURCE_CHANGED: ret = responseInts(p); break;
+	    case RIL_UNSOL_CDMA_PRL_CHANGED: ret = responseInts(p); break;
+	    case RIL_UNSOL_CDMA_PRL_CHANGED2: ret = responseInts(p); break;
+	    case RIL_UNSOL_EXIT_EMERGENCY_CALLBACK_MODE: ret = responseVoid(p); break;
+	    case RIL_UNSOL_VOICE_RADIO_TECH_CHANGED: ret = responseVoid(p); break;
+
 
             default:
                 throw new RuntimeException("Unrecognized unsol response: " + response);
@@ -2740,6 +2763,29 @@ public class RIL extends BaseCommands implements CommandsInterface {
                     mResendIncallMuteRegistrants.notifyRegistrants(
                                         new AsyncResult (null, ret, null));
                 }
+		break;
+/*
+ * KD 8/28 - Add new upcall routines for the added CDMA radio states
+ */
+            case RIL_UNSOL_CDMA_SUBSCRIPTION_SOURCE_CHANGED:
+                if (RILJ_LOGD) unsljLog(response);
+                int [] ssource = (int[])ret;
+
+                if(mCdmaSubscriptionSourceChangedRegistrants != null) {
+                    mCdmaSubscriptionSourceChangedRegistrants.notifyRegistrants(
+                          new AsyncResult(null, ssource, null));
+                }
+                break;
+            case RIL_UNSOL_CDMA_PRL_CHANGED:
+            case RIL_UNSOL_CDMA_PRL_CHANGED2:
+                if (RILJ_LOGD) unsljLog(response);
+                int [] prlv = (int [])ret;
+
+                if(mCdmaPrlChangedRegistrants != null) {
+                    mCdmaPrlChangedRegistrants.notifyRegistrants(
+                          new AsyncResult(null, prlv, null));
+                }
+                break;
         }
     }
 
@@ -3056,8 +3102,6 @@ public class RIL extends BaseCommands implements CommandsInterface {
            radioType = NETWORK_TYPE_HSUPA;
        } else if (radioString.equals("HSPA")) {
            radioType = NETWORK_TYPE_HSPA;
-       } else if (radioString.equals("HSPA+")) {
-           radioType = NETWORK_TYPE_HSPAP;
        } else {
            radioType = NETWORK_TYPE_UNKNOWN;
        }
