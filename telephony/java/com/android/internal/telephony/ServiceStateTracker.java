@@ -45,9 +45,6 @@ public abstract class ServiceStateTracker extends Handler {
     protected static final int DATA_ACCESS_HSUPA = 10;
     protected static final int DATA_ACCESS_HSPA = 11;
     protected static final int DATA_ACCESS_CDMA_EvDo_B = 12;
-    protected static final int DATA_ACCESS_EHRPD = 13;
-    protected static final int DATA_ACCESS_LTE = 14;
-    protected static final int DATA_ACCESS_HSPAP = 15;
 
     protected CommandsInterface cm;
 
@@ -123,6 +120,13 @@ public abstract class ServiceStateTracker extends Handler {
     protected static final int EVENT_ERI_FILE_LOADED                   = 36;
     protected static final int EVENT_OTA_PROVISION_STATUS_CHANGE       = 37;
     protected static final int EVENT_SET_RADIO_POWER_OFF               = 38;
+/*
+ * KD 8/24 - Add event flags for CDMA subscription and PRL
+ */
+    protected static final int EVENT_CDMA_SUBSCRIPTION_SOURCE_CHANGED  = 40;
+    protected static final int EVENT_CDMA_PRL_VERSION_CHANGED          = 41;
+
+
 
     protected static final String TIMEZONE_PROPERTY = "persist.sys.timezone";
 
