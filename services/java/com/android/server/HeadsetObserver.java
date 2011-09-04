@@ -37,9 +37,20 @@ class HeadsetObserver extends UEventObserver {
     private static final String TAG = HeadsetObserver.class.getSimpleName();
     private static final boolean LOG = true;
 
-    private static final String HEADSET_UEVENT_MATCH = "DEVPATH=/devices/virtual/switch/h2w";
-    private static final String HEADSET_STATE_PATH = "/sys/class/switch/h2w/state";
-    private static final String HEADSET_NAME_PATH = "/sys/class/switch/h2w/name";
+/*
+ * KD 9/4 - There ought to be a defined place to do this (and probably
+ * is) but..... where's the damn documentation!  For the Virgin Triumph this 
+ * has to be under "headset_sensor", not "h2w".  Yeah, I know - so sue 
+ * the kernel driver writer.  He stuck it where he stuck it; h2w comes back
+ * as "no device".
+ */
+
+//    private static final String HEADSET_UEVENT_MATCH = "DEVPATH=/devices/virtual/switch/h2w";
+//    private static final String HEADSET_STATE_PATH = "/sys/class/switch/h2w/state";
+//    private static final String HEADSET_NAME_PATH = "/sys/class/switch/h2w/name";
+    private static final String HEADSET_UEVENT_MATCH = "DEVPATH=/devices/virtual/switch/headset_sensor";
+    private static final String HEADSET_STATE_PATH = "/sys/class/switch/h2w/headset_sensor";
+    private static final String HEADSET_NAME_PATH = "/sys/class/switch/h2w/headset_sensor";
 
     private static final int BIT_HEADSET = (1 << 0);
     private static final int BIT_HEADSET_NO_MIC = (1 << 1);

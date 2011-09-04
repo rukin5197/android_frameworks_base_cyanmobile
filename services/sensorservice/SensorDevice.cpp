@@ -209,9 +209,10 @@ void SensorDevice::dump(String8& result, char* buffer, size_t SIZE)
 }
 
 ssize_t SensorDevice::getSensorList(sensor_t const** list) {
+    LOGV("Getting sensor list..");
     if (!mSensorModule) return NO_INIT;
     ssize_t count = mSensorModule->get_sensors_list(mSensorModule, list);
-
+    LOGV("Retrieved sensor list of %d items..", count);
 #ifdef USE_LGE_ALS_DUMMY
     return addDummyLGESensor(list, count);
 #endif
