@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 
+/*
+ * KD 9/4 - Modifications cribbed from inferiorhumanorgans' code that runs on
+ * the Optimus.  Thank God for small favors and actual shared repositories!
+ */
+
 package com.android.internal.telephony.cdma;
 
 
@@ -158,7 +163,7 @@ final class CdmaSMSDispatcher extends SMSDispatcher {
                 Log.d(TAG, "Received SMS without user data");
             }
             handled = true;
-        }
+        } 
 
         if (handled) {
             return Intents.RESULT_SMS_HANDLED;
@@ -333,6 +338,7 @@ final class CdmaSMSDispatcher extends SMSDispatcher {
             sourcePort |= 0xFF & pdu[index++];
             destinationPort = (0xFF & pdu[index++]) << 8;
             destinationPort |= 0xFF & pdu[index++];
+    Log.d(SMS_DEBUG_TAG, "Source Port: " + sourcePort + " Destination Port: " + destinationPort);
             // Some carriers incorrectly send duplicate port fields in omadm wap pushes.
             // If configured, check for that here
             if (mCheckForDuplicatePortsInOmadmWapPush) {
