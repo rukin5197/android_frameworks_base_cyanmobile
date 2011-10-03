@@ -95,6 +95,7 @@ public final class ConnectionSettings implements Parcelable {
         BluetoothAdapter bta = BluetoothAdapter.getDefaultAdapter();
         LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         WifiManager wm = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+<<<<<<< HEAD
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
         boolean forcedState = getValue() == 1;
@@ -151,11 +152,25 @@ public final class ConnectionSettings implements Parcelable {
                     }
                 } else {
                     if (currentState) {
+=======
+        Boolean state;
+
+        switch (getConnectionId()) {
+            case PROFILE_CONNECTION_BLUETOOTH:
+                state = bta.isEnabled();
+                if (getValue() == 1) {
+                    if (!state) {
+                        bta.enable();
+                    }
+                } else {
+                    if (state) {
+>>>>>>> afd8afb... A 0.6 commits plus resync against CM7 master
                         bta.disable();
                     }
                 }
                 break;
             case PROFILE_CONNECTION_GPS:
+<<<<<<< HEAD
                 currentState = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
                 if (forcedState) {
                     if (!currentState) {
@@ -163,10 +178,20 @@ public final class ConnectionSettings implements Parcelable {
                     }
                 } else {
                     if (currentState) {
+=======
+                state = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+                if (getValue() == 1) {
+                    if (!state) {
+                        Settings.Secure.setLocationProviderEnabled(context.getContentResolver(), LocationManager.GPS_PROVIDER, true);
+                    }
+                } else {
+                    if (state) {
+>>>>>>> afd8afb... A 0.6 commits plus resync against CM7 master
                         Settings.Secure.setLocationProviderEnabled(context.getContentResolver(), LocationManager.GPS_PROVIDER, false);
                     }
                 }
                 break;
+<<<<<<< HEAD
             case PROFILE_CONNECTION_SYNC:
                 currentState = ContentResolver.getMasterSyncAutomatically();
                 if (forcedState != currentState) {
@@ -185,12 +210,27 @@ public final class ConnectionSettings implements Parcelable {
                     }
                 } else {
                     if (currentState) {
+=======
+            case PROFILE_CONNECTION_WIFI:
+                int wifiApState = wm.getWifiApState();
+                state = wm.isWifiEnabled();
+                if (getValue() == 1) {
+                    if ((wifiApState == WifiManager.WIFI_AP_STATE_ENABLING) || (wifiApState == WifiManager.WIFI_AP_STATE_ENABLED)) {
+                        wm.setWifiApEnabled(null, false);
+                    }
+                    if (!state) {
+                        wm.setWifiEnabled(true);
+                    }
+                } else {
+                    if (state) {
+>>>>>>> afd8afb... A 0.6 commits plus resync against CM7 master
                         wm.setWifiEnabled(false);
                     }
                 }
                 break;
             case PROFILE_CONNECTION_WIFIAP:
                 int wifiState = wm.getWifiState();
+<<<<<<< HEAD
                 currentState = wm.isWifiApEnabled();
                 if (forcedState) {
                     if ((wifiState == WifiManager.WIFI_STATE_ENABLING) || (wifiState == WifiManager.WIFI_STATE_ENABLED)) {
@@ -201,6 +241,18 @@ public final class ConnectionSettings implements Parcelable {
                     }
                 } else {
                     if (currentState) {
+=======
+                state = wm.isWifiApEnabled();
+                if (getValue() == 1) {
+                    if ((wifiState == WifiManager.WIFI_STATE_ENABLING) || (wifiState == WifiManager.WIFI_STATE_ENABLED)) {
+                        wm.setWifiEnabled(false);
+                    }
+                    if (!state) {
+                        wm.setWifiApEnabled(null, true);
+                    }
+                } else {
+                    if (state) {
+>>>>>>> afd8afb... A 0.6 commits plus resync against CM7 master
                         wm.setWifiApEnabled(null, false);
                     }
                 }

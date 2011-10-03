@@ -263,7 +263,10 @@ sp<ICamera> CameraService::connect(
     }
 #endif
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> afd8afb... A 0.6 commits plus resync against CM7 master
 #if defined(BOARD_HAS_LGE_FFC) || defined(BOARD_FLIPS_FFC_VERTICAL)
     CameraParameters params(hardware->getParameters());
     if (cameraId == 1) {
