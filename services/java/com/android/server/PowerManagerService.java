@@ -2174,7 +2174,7 @@ class PowerManagerService extends IPowerManager.Stub
                         // will then count going dim as turning off.
                         mScreenOffTime = SystemClock.elapsedRealtime();
                         mAlwaysOnAndDimmed = true;
-                    }
+		    } 
                     brightness = mScreenDim;
                 }
             }

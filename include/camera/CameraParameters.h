@@ -480,6 +480,36 @@ public:
     static const char SCENE_MODE_SPORTS[];
     static const char SCENE_MODE_PARTY[];
     static const char SCENE_MODE_CANDLELIGHT[];
+//
+// KD 9/28 - Add reuqired parameters for Froyo on the Triumph - should not
+// break other cameras.
+//
+    static const char SCENE_MODE_BACKLIGHT[];
+    static const char SCENE_MODE_FLOWERS[];
+    static const char SCENE_DETECT_OFF[];
+    static const char SCENE_DETECT_ON[];
+    static const char KEY_SUPPORTED_SCENE_DETECT[];
+    static const char WIDESCREEN_4_3[];
+    static const char WIDESCREEN_5_3[];
+    static const char SKIN_TONE_ENHANCEMENT_ENABLE[];
+    static const char SKIN_TONE_ENHANCEMENT_DISABLE[];
+    static const char PIXEL_FORMAT_YUV420SP_ADRENO[]; // NV21
+    static const char KEY_MAX_BRIGHTNESS[];
+    static const char KEY_SUPPORTED_SKIN_TONE_ENHANCEMENT_MODES[];
+    static const char KEY_SUPPORTED_WIDESCREEN[];
+    static const char KEY_SKIN_TONE_ENHANCEMENT[];
+    static const char KEY_BRIGHTNESS[];
+    static const char KEY_WIDESCREEN[];
+    static const char KEY_SCENE_DETECT[];
+    static const char KEY_DEF_SHARPNESS[];
+    static const char KEY_MIN_SHARPNESS[];
+    static const char KEY_DEF_CONTRAST[];
+    static const char KEY_MIN_CONTRAST[];
+    static const char KEY_DEF_BRIGHTNESS[];
+    static const char KEY_MIN_BRIGHTNESS[];
+    static const char KEY_DEF_SATURATION[];
+    static const char KEY_MIN_SATURATION[];
+// end
     // Applications are looking for a barcode. Camera driver will be optimized
     // for barcode reading.
     static const char SCENE_MODE_BARCODE[];

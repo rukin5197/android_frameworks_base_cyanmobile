@@ -588,6 +588,8 @@ static void android_hardware_Camera_setDisplayOrientation(JNIEnv *env, jobject t
     sp<Camera> camera = get_native_camera(env, thiz, NULL);
     if (camera == 0) return;
 
+    LOGE("android_hardware_Camera_setDisplayOrientation %d", value);
+
     if (camera->sendCommand(CAMERA_CMD_SET_DISPLAY_ORIENTATION, value, 0) != NO_ERROR) {
         jniThrowException(env, "java/lang/RuntimeException", "set display orientation failed");
     }
