@@ -186,7 +186,8 @@ status_t CameraService::getCameraInfo(int cameraId,
     LOGI("CameraService::getCameraInfo facing=%d, orientation=%d",
 	cameraInfo->facing, cameraInfo->orientation);
     if (cameraInfo->facing == 1) {
-	cameraInfo->orientation = 90;
+//	cameraInfo->orientation = 90;
+	cameraInfo->orientation = 270;
         LOGI("CameraService::getCameraInfo Set orientation %d",
 		cameraInfo->orientation);
     }
