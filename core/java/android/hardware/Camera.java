@@ -1252,32 +1252,33 @@ public class Camera {
          */
         public static final String SCENE_MODE_CANDLELIGHT = "candlelight";
        
-	/*
-    	 * KD 9/28 - Froyo camera scene mode options (several added)
-   	 */
-	public static final String SCENE_MODE_BACKLIGHT = "backlight";
-	public static final String SCENE_MODE_FLOWERS = "flowers";
-	public static final String SCENE_DETECT_OFF = "off";
-	public static final String SCENE_DETECT_ON = "on";
-	public static final String KEY_SUPPORTED_SCENE_DETECT = "";
-	public static final String KEY_SUPPORTED_WIDESCREEN = "";
-	public static final String WIDESCREEN_4_3 = "";
-	public static final String WIDESCREEN_5_3 = "";
-	public static final String SKIN_TONE_ENHANCEMENT_ENABLE = "";
-	public static final String SKIN_TONE_ENHANCEMENT_DISABLE = "";
-	public static final String PIXEL_FORMAT_YUV420SP_ADRENO = "yuv420sp";
-	public static final String KEY_SUPPORTED_SKIN_TONE_ENHANCEMENT_MODES = "none";
-	public static final String KEY_SKIN_TONE_ENHANCEMENT = "none";
-	public static final String KEY_WIDESCREEN = "none";
-	public static final String KEY_SCENE_DETECT = "";
-	public static final String KEY_DEF_SHARPNESS = "";
-	public static final String KEY_MIN_SHARPNESS = "";
-	public static final String KEY_DEF_CONTRAST = "";
-	public static final String KEY_MIN_CONTRAST = "";
-	public static final String KEY_DEF_BRIGHTNESS = "";
-	public static final String KEY_MIN_BRIGHTNESS = "";
-	public static final String KEY_DEF_SATURATION = "";
-	public static final String KEY_MIN_SATURATION = "";
+//	/*
+//    	 * KD 9/28 - Froyo camera scene mode options (several added)
+//	 * Removed 10/15/2011 - Not needed with current camera fixes
+//   	 */
+//	public static final String SCENE_MODE_BACKLIGHT = "backlight";
+//	public static final String SCENE_MODE_FLOWERS = "flowers";
+//	public static final String SCENE_DETECT_OFF = "off";
+//	public static final String SCENE_DETECT_ON = "on";
+//	public static final String KEY_SUPPORTED_SCENE_DETECT = "";
+//	public static final String KEY_SUPPORTED_WIDESCREEN = "";
+//	public static final String WIDESCREEN_4_3 = "";
+//	public static final String WIDESCREEN_5_3 = "";
+//	public static final String SKIN_TONE_ENHANCEMENT_ENABLE = "";
+//	public static final String SKIN_TONE_ENHANCEMENT_DISABLE = "";
+//	public static final String PIXEL_FORMAT_YUV420SP_ADRENO = "yuv420sp";
+//	public static final String KEY_SUPPORTED_SKIN_TONE_ENHANCEMENT_MODES = "none";
+//	public static final String KEY_SKIN_TONE_ENHANCEMENT = "none";
+//	public static final String KEY_WIDESCREEN = "none";
+//	public static final String KEY_SCENE_DETECT = "";
+//	public static final String KEY_DEF_SHARPNESS = "";
+//	public static final String KEY_MIN_SHARPNESS = "";
+//	public static final String KEY_DEF_CONTRAST = "";
+//	public static final String KEY_MIN_CONTRAST = "";
+//	public static final String KEY_DEF_BRIGHTNESS = "";
+//	public static final String KEY_MIN_BRIGHTNESS = "";
+//	public static final String KEY_DEF_SATURATION = "";
+//	public static final String KEY_MIN_SATURATION = "";
 
         /**
          * Applications are looking for a barcode. Camera driver will be
