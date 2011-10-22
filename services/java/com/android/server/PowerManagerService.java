@@ -118,6 +118,7 @@ class PowerManagerService extends IPowerManager.Stub
 
     // How long to wait to debounce light sensor changes in milliseconds
     private static final int LIGHT_SENSOR_DELAY = 2000;
+<<<<<<< HEAD
 
     // light sensor events rate in microseconds
     private static final int LIGHT_SENSOR_RATE = 1000000;
@@ -131,6 +132,8 @@ class PowerManagerService extends IPowerManager.Stub
     private static final int LIGHT_SENSOR_OFFSET_SCALE = 8;
 
     // For debouncing the proximity sensor in milliseconds
+=======
+>>>>>>> 8e748c9... USB tethering and proximity sensor
     private static final int PROXIMITY_SENSOR_DELAY = 1000;
 
     // trigger proximity if distance is less than 5 cm
@@ -245,6 +248,7 @@ class PowerManagerService extends IPowerManager.Stub
     private LightsService.Light mAttentionLight;
     private LightsService.Light mCapsLight;
     private LightsService.Light mFnLight;
+    private boolean mStayOnWhilePluggedIn;
     private UnsynchronizedWakeLock mBroadcastWakeLock;
     private UnsynchronizedWakeLock mStayOnWhilePluggedInScreenDimLock;
     private UnsynchronizedWakeLock mStayOnWhilePluggedInPartialLock;
@@ -349,7 +353,8 @@ class PowerManagerService extends IPowerManager.Stub
 
     // could be either static or controllable at runtime
     private static final boolean mSpew = false;
-    private static final boolean mDebugProximitySensor = (false || mSpew);
+//    private static final boolean mDebugProximitySensor = (false || mSpew);
+    private static final boolean mDebugProximitySensor = true;
     private static final boolean mDebugLightSensor = (false || mSpew);	
     
     private native void nativeInit();
@@ -678,6 +683,7 @@ class PowerManagerService extends IPowerManager.Stub
     void initInThread() {
         mHandler = new Handler();
 
+    	mStayOnWhilePluggedIn = false;
         mBroadcastWakeLock = new UnsynchronizedWakeLock(
                                 PowerManager.PARTIAL_WAKE_LOCK, "sleep_broadcast", true);
         mStayOnWhilePluggedInScreenDimLock = new UnsynchronizedWakeLock(
@@ -826,9 +832,13 @@ class PowerManagerService extends IPowerManager.Stub
             // keep the device on if we're plugged in and mStayOnWhilePluggedIn is set.
             mStayOnWhilePluggedInScreenDimLock.acquire();
             mStayOnWhilePluggedInPartialLock.acquire();
+    	    mStayOnWhilePluggedIn = true;
+// KD If plugged and screen stays on, don't dim (commented for now)
+//	    TimeoutTask.remainingTimeoutOverride = Integer.MAX_VALUE;
         } else {
             mStayOnWhilePluggedInScreenDimLock.release();
             mStayOnWhilePluggedInPartialLock.release();
+    	    mStayOnWhilePluggedIn = false;
         }
     }
 
@@ -2172,10 +2182,10 @@ class PowerManagerService extends IPowerManager.Stub
                         // automatically turn off while plugged in.  To
                         // still have a sense of when it is inactive, we
                         // will then count going dim as turning off.
-                        mScreenOffTime = SystemClock.elapsedRealtime();
-                        mAlwaysOnAndDimmed = true;
+//                        mScreenOffTime = SystemClock.elapsedRealtime();
+//                        mAlwaysOnAndDimmed = true;
 		    } 
-                    brightness = mScreenDim;
+//                    brightness = mScreenDim;
                 }
             }
             if (mWaitingForFirstLightSensor && (newState & SCREEN_ON_BIT) != 0) {
@@ -3726,7 +3736,7 @@ class PowerManagerService extends IPowerManager.Stub
                         distance < mProximitySensor.getMaximumRange());
 
                 if (mDebugProximitySensor) {
-                    Slog.d(TAG, "mProximityListener.onSensorChanged active: " + active);
+                    Slog.d(TAG, "mProximityListener.onSensorChanged active: " + active + " Distance: " + distance);
                 }
                 if (timeSinceLastEvent < PROXIMITY_SENSOR_DELAY) {
                     // enforce delaying atleast PROXIMITY_SENSOR_DELAY before processing
