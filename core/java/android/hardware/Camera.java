@@ -1252,9 +1252,9 @@ public class Camera {
          */
         public static final String SCENE_MODE_CANDLELIGHT = "candlelight";
        
-	/*
-    	 * KD 9/28 - Froyo camera scene mode options (several added)
-   	 */
+//	/*
+//    	 * KD 9/28 - Froyo camera scene mode options (several added)
+//   	 */
 	public static final String SCENE_MODE_BACKLIGHT = "backlight";
 	public static final String SCENE_MODE_FLOWERS = "flowers";
 	public static final String SCENE_DETECT_OFF = "off";

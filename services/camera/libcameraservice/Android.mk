@@ -12,6 +12,7 @@ ifeq ($(USE_CAMERA_STUB),)
 endif
 
 ifeq ($(USE_CAMERA_STUB),true)
+
 #
 # libcamerastub
 #
