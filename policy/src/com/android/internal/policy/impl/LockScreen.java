@@ -1161,13 +1161,7 @@ class LockScreen extends LinearLayout implements KeyguardScreen, KeyguardUpdateM
         if (grabbedState != SlidingTab.OnTriggerListener.NO_HANDLE) {
             mGestureOverlay.cancelGesture();
             mCallback.pokeWakelock();
-<<<<<<< HEAD
         } else if (mUseRingLockscreen && mCallback != null) {
-=======
-        }
-
-        if (mUseRingLockscreen) {
->>>>>>> afd8afb... A 0.6 commits plus resync against CM7 master
             mCallback.pokeWakelock();
         }
     }

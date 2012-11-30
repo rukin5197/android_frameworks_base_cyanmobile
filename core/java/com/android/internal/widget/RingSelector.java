@@ -875,7 +875,6 @@ public class RingSelector extends ViewGroup {
             switch (action) {
                 case MotionEvent.ACTION_MOVE:
                     moveRing(x, y);
-<<<<<<< HEAD
                     if (!mMiddlePrimary && mUseMiddleRing && mCurrentRing == mMiddleRing) {
                         for (int q = 0; q < 4; q++) {
                             if (!mSecRings[q].isHidden() && mSecRings[q].contains((int) x, (int) y)) {
@@ -885,9 +884,6 @@ public class RingSelector extends ViewGroup {
                             }
                         }
                     } else if (mMiddlePrimary && mUseMiddleRing && mCurrentRing == mLeftRing) {
-=======
-                    if (mUseMiddleRing && mCurrentRing == mMiddleRing) {
->>>>>>> afd8afb... A 0.6 commits plus resync against CM7 master
                         for (int q = 0; q < 4; q++) {
                             if (!mSecRings[q].isHidden() && mSecRings[q].contains((int) x, (int) y)) {
                                 mSecRings[q].activate();
