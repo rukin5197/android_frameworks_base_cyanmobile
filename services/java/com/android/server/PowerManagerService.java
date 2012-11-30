@@ -2705,6 +2705,34 @@ class PowerManagerService extends IPowerManager.Stub
     }
 
     private int getAutoBrightnessValue(int current, int last, int[] levels, int[] values) {
+
+/* 9/4/2011
+ * Totally rewrite this crap.  The premise on the original code is good
+ * but the implementation sucks donkey balls.  Note that the code already
+ * filters "jumpy" light sensor values before we get in here, and only
+ * passes us "locked" values, so implementing hysteresis makes no sense. 
+ * Worse, it presumes the "levels" array will get updated, and with some
+ * devices it clearly isn't - and maybe all of them.
+ *
+ * It also takes care of passing us "fake" numbers for the docked instance.
+ * So instead, we will do two things: 1) Prevent returning a "zero" 
+ * brightness which will turn off the screen (harder than hell to see that
+ * eh?) and 2) scale light sensor numbers triple so that the LCD comes
+ * to full brightness sooner than it otherwise would.  We also prevent
+ * out-of-range returns to the high side.
+ * 
+ * If you don't like this then remove the variable from build.prop and
+ * it's gone.
+ */
+    if (SystemProperties.getBoolean("ro.lights.kd_auto", true)) {
+	
+		int myvalue = 20 ;		/* Declare minimum valid LCD illumination */
+		myvalue = myvalue + (current * 4);	/* Scale sensor and add */
+		if (myvalue > 255) {
+			myvalue = 255;	/* Cap at maximum brightness */
+		}
+		return myvalue;		/* Heh that wasn't so hard */
+    } else {	
         try {
             // If have a last value and sensor value is decreasing
             // we should include hysteresis in calculations
@@ -2749,6 +2777,7 @@ class PowerManagerService extends IPowerManager.Stub
                     + "the auto-brightness levels array.  Check config.xml.", e);
             return 255;
         }
+    }
     }
 
     private Runnable mProximityTask = new Runnable() {
@@ -2932,7 +2961,18 @@ class PowerManagerService extends IPowerManager.Stub
                 // use maximum light sensor value seen since screen went on for LCD to avoid flicker
                 // we only do this if we are undocked, since lighting should be stable when
                 // stationary in a dock.
-	       int lcdValue = getAutoBrightnessValue((mIsDocked ? value : mHighestLightSensorValue),
+		// KD 9/4 - Remove the "no decrease" light level test if
+  		// the user doesn't like that, and scale on a hard factor.
+		int lcdValue = 0;
+                if (SystemProperties.getBoolean("ro.lights.kd_auto", true)) {
+	            	lcdValue = getAutoBrightnessValue(
+                        (value),
+                        mLastLcdValue,
+                        (mCustomLightEnabled ? mCustomLightLevels : mAutoBrightnessLevels),
+                        (mCustomLightEnabled ? mCustomLcdValues : mLcdBacklightValues));
+                } else {
+	               lcdValue = getAutoBrightnessValue(
+                       (mIsDocked ? value : mHighestLightSensorValue),
                        mLastLcdValue,
                        (mCustomLightEnabled ? mCustomLightLevels : mAutoBrightnessLevels),
                        (mCustomLightEnabled ? mCustomLcdValues : mLcdBacklightValues));
