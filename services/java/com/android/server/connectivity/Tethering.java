@@ -1722,4 +1722,3 @@ public class Tethering extends INetworkManagementEventObserver.Stub {
         return;
     }
 }
-
