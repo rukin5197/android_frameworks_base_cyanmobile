@@ -2742,7 +2742,7 @@ class PowerManagerService extends IPowerManager.Stub
                     break;
                 }
             }
-	    return values[i];
+	    return levels[i];
         } catch (Exception e) {
             // guard against null pointer or index out of bounds errors
             Slog.e(TAG, "Values array must be non-empty and must be one element longer than "
@@ -2936,6 +2936,8 @@ class PowerManagerService extends IPowerManager.Stub
                        mLastLcdValue,
                        (mCustomLightEnabled ? mCustomLightLevels : mAutoBrightnessLevels),
                        (mCustomLightEnabled ? mCustomLcdValues : mLcdBacklightValues));
+                }
+
                 int buttonValue = getAutoBrightnessValue(value, mLastButtonValue,
                         (mCustomLightEnabled ? mCustomLightLevels : mAutoBrightnessLevels),
                         (mCustomLightEnabled ? mCustomButtonValues : mButtonBacklightValues));
