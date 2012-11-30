@@ -186,7 +186,8 @@ status_t CameraService::getCameraInfo(int cameraId,
     LOGI("CameraService::getCameraInfo facing=%d, orientation=%d",
 	cameraInfo->facing, cameraInfo->orientation);
     if (cameraInfo->facing == 1) {
-	cameraInfo->orientation = 90;
+//	cameraInfo->orientation = 90;
+	cameraInfo->orientation = 270;
         LOGI("CameraService::getCameraInfo Set orientation %d",
 		cameraInfo->orientation);
     }
@@ -263,17 +264,6 @@ sp<ICamera> CameraService::connect(
     }
 #endif
 
-
-#if defined(BOARD_HAS_LGE_FFC) || defined(BOARD_FLIPS_FFC_VERTICAL)
-    CameraParameters params(hardware->getParameters());
-    if (cameraId == 1) {
-    	LOGE("CameraService::Board flips FFC vertically; correct");
-        params.set("nv-flip-mode","vertical");
-    } else {
-        params.set("nv-flip-mode","off");
-    }
-    hardware->setParameters(params);
-#endif
 
     CameraInfo info;
     HAL_getCameraInfo(cameraId, &info);
@@ -1173,6 +1163,7 @@ status_t CameraService::Client::autoFocus() {
     notifyCallback(CAMERA_MSG_FOCUS, 1, 0, 0);
     return NO_ERROR;
 #endif
+
     LOG1("autoFocus (pid %d)", getCallingPid());
 
     Mutex::Autolock lock(mLock);
@@ -1187,6 +1178,7 @@ status_t CameraService::Client::cancelAutoFocus() {
     // skip autofocus cancellation
     return NO_ERROR;
 #endif
+
     LOG1("cancelAutoFocus (pid %d)", getCallingPid());
 
     Mutex::Autolock lock(mLock);
@@ -1807,17 +1799,6 @@ void CameraService::Client::copyFrameAndPostCopiedFrame(
 }
 
 int CameraService::Client::getOrientation(int degrees, bool mirror) {
-
-    LOGV("Entry: Asking orientation %d with %d",degrees,mirror);
-
-#ifdef BOARD_HAS_LGE_FFC
-    /* FLIP_* generate weird behaviors that don't include flipping */
-    LOGV("Asking orientation %d with %d",degrees,mirror);
-    if (mirror && 
-          degrees == 270 || degrees == 90)  // ROTATE_90 just for these orientations
-            return HAL_TRANSFORM_ROT_90;
-    mirror = 0;
-#endif
     if (!mirror) {
         if (degrees == 0) return 0;
         else if (degrees == 90) return HAL_TRANSFORM_ROT_90;
