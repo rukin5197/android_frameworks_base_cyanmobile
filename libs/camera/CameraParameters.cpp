@@ -151,28 +151,17 @@ const char CameraParameters::SCENE_MODE_CANDLELIGHT[] = "candlelight";
 // KD 9/28 - Add parameters for Froyo camera in Triumph - should not break 
 // other cameras
 //
-const char CameraParameters::SCENE_MODE_BACKLIGHT[] = "backlight";
-const char CameraParameters::SCENE_MODE_FLOWERS[] = "flowers";
-const char CameraParameters::SCENE_DETECT_ON[] = "on";
-const char CameraParameters::SCENE_DETECT_OFF[] = "off";
-const char CameraParameters::KEY_SUPPORTED_SCENE_DETECT[] = "none";
 const char CameraParameters::WIDESCREEN_4_3[] = "off";
 const char CameraParameters::WIDESCREEN_5_3[] = "off";
-const char CameraParameters::SKIN_TONE_ENHANCEMENT_ENABLE[] = "1";
-const char CameraParameters::SKIN_TONE_ENHANCEMENT_DISABLE[] = "0";
-const char CameraParameters::PIXEL_FORMAT_YUV420SP_ADRENO[] = "yuv420sp-adreno";
 const char CameraParameters::KEY_MAX_BRIGHTNESS[] = "max-brightness";
-const char CameraParameters::KEY_SUPPORTED_SKIN_TONE_ENHANCEMENT_MODES[] = "skin-tone-enhancement";
 const char CameraParameters::KEY_SUPPORTED_WIDESCREEN[] = "none";
-const char CameraParameters::KEY_SKIN_TONE_ENHANCEMENT[] = "skin-tone";
 const char CameraParameters::KEY_BRIGHTNESS[] = "brightness";
 const char CameraParameters::KEY_WIDESCREEN[] = "widescreen";
-const char CameraParameters::KEY_SCENE_DETECT[] = "none";
-const char CameraParameters::KEY_DEF_SHARPNESS[] = "2";
+const char CameraParameters::KEY_DEF_SHARPNESS[] = "0";
 const char CameraParameters::KEY_MIN_SHARPNESS[] = "0";
 const char CameraParameters::KEY_DEF_CONTRAST[] = "2";
 const char CameraParameters::KEY_MIN_CONTRAST[] = "0";
-const char CameraParameters::KEY_DEF_SATURATION[] = "2";
+const char CameraParameters::KEY_DEF_SATURATION[] = "0";
 const char CameraParameters::KEY_MIN_SATURATION[] = "0";
 const char CameraParameters::KEY_DEF_BRIGHTNESS[] = "2";
 const char CameraParameters::KEY_MIN_BRIGHTNESS[] = "0";
