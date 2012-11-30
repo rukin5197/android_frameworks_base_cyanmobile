@@ -77,8 +77,8 @@ public class GpsLocationProvider implements LocationProviderInterface {
 
     private static final String TAG = "GpsLocationProvider";
 
-    private static final boolean DEBUG = true;
-    private static final boolean VERBOSE = true;
+    private static final boolean DEBUG = false;
+    private static final boolean VERBOSE = false;
 
     // these need to match GpsPositionMode enum in gps.h
     private static final int GPS_POSITION_MODE_STANDALONE = 0;
@@ -1456,7 +1456,8 @@ public class GpsLocationProvider implements LocationProviderInterface {
                 if (networkType == TelephonyManager.NETWORK_TYPE_UMTS
                     || networkType == TelephonyManager.NETWORK_TYPE_HSDPA
                     || networkType == TelephonyManager.NETWORK_TYPE_HSUPA
-                    || networkType == TelephonyManager.NETWORK_TYPE_HSPA) {
+                    || networkType == TelephonyManager.NETWORK_TYPE_HSPA
+                    || networkType == TelephonyManager.NETWORK_TYPE_HSPAP) {
                     type = AGPS_REF_LOCATION_TYPE_UMTS_CELLID;
                 } else {
                     type = AGPS_REF_LOCATION_TYPE_GSM_CELLID;
